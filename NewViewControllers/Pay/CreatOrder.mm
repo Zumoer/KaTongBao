@@ -343,6 +343,7 @@
         //存一下订单号
         NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
         [user setObject:dic[@"orderNo"] forKey:@"orderNo"];
+        [user synchronize];
         NSLog(@"存下来的订单:%@",[user objectForKey:@"orderNo"]);
         if ([code isEqualToString:@"000000"]) {
             //[UPPayPlugin startPay:YinLianOrd mode:kMode_Development viewController:self delegate:self];

@@ -20,6 +20,7 @@
 #import "JXCheckOrderViewController.h"
 #import "KTBbasicMsgViewController.h"
 #import "JXBankInfoViewController.h"
+#import "KTBPayMeathodSelectViewController.h"
 @implementation KTBVipSignUpViewController {
     MesageCell *NameCell;
     MesageCell *PhoneCell;
@@ -125,7 +126,13 @@
         if (![code isEqualToString:@"000000"]) {
             [self alert:msg];
         }else {
-            [self RequestForPay];
+            
+            KTBPayMeathodSelectViewController *KTBPaySelect = [[KTBPayMeathodSelectViewController alloc] init];
+            KTBPaySelect.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:KTBPaySelect animated:YES];
+            KTBPaySelect.hidesBottomBarWhenPushed = NO;
+            
+            //[self RequestForPay];
         }
         
     } failure:^(NSError *error) {

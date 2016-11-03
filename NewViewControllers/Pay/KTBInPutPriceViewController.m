@@ -119,7 +119,7 @@
         _amtLabel.text = [BusiIntf curPayOrder].T0Tip;
     }
     [self.view addSubview:_amtLabel];
-    _amtLabel.sd_layout.leftSpaceToView(self.view,10).topSpaceToView(WheitBackImg,10).rightSpaceToView(self.view,10).bottomSpaceToView(GrayBackImg,5);
+    _amtLabel.sd_layout.leftSpaceToView(self.view,10).topSpaceToView(WheitBackImg,5).rightSpaceToView(self.view,10).bottomSpaceToView(GrayBackImg,5);
     
     [self CreateButtons];
 

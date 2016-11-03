@@ -77,6 +77,7 @@
     table.delegate = self;
     table.dataSource = self;
     table.backgroundColor = LightGrayColor;
+    table.showsVerticalScrollIndicator = NO;
     
     UITapGestureRecognizer *TapToResignKeyBoard = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(ResignKeyBord)];
     TapToResignKeyBoard.numberOfTouchesRequired = 1;
@@ -243,8 +244,8 @@
     //    UITextField *textfldThree = [self.view viewWithTag:102];
     
     [SVProgressHUD show];
-    if (pic1 == nil || pic2 == nil || pic4 == nil ) {
-        [self alert:@"您还有照片未上传..."];
+    if (pic1 == nil || pic2 == nil || pic4 == nil || [pic1 isEqualToString:@""] || [pic2 isEqualToString:@""] || [pic4 isEqualToString:@""]) {
+        [self alert:@"您还有照片未上传,或者重新拍照上传"];
         return;
     }else if ([Name isEqualToString:@""] || [CertNumber isEqualToString:@""]  ) {
         [self alert:@"您还有信息未填写完整!"];
@@ -379,7 +380,7 @@
     NSString *params = [dicc JSONFragment];
     [IBHttpTool postWithURL:url params:params success:^(id result) {
         //[SVProgressHUD show];
-        NSLog(@"数据:%@",result);
+        NSLog(@"上传图片成功数据:%@",result);
         NSDictionary *dic = [result JSONValue];
         NSString *msg = dic[@"msg"];
         NSString *code = dic[@"code"];
@@ -390,19 +391,19 @@
         [AlertView(msg, @"确定") show];
         if (currentTag == 1000) {
             pic1 = httpPath;
-            NSLog(@"pic1%@",pic1);
+            NSLog(@"pic1：%@",pic1);
             
         }else if (currentTag == 1001) {
             pic2 = httpPath;
-            NSLog(@"pic2%@",pic2);
+            NSLog(@"pic2：%@",pic2);
             
         }else if (currentTag == 1002) {
             pic4 = httpPath;
-            NSLog(@"pic4%@",pic4);
+            NSLog(@"pic4：%@",pic4);
             
         }else if (currentTag == 1003) {
-            pic4 = httpPath;
-            NSLog(@"pic4%@",pic4);
+            //pic4 = httpPath;
+            NSLog(@"pic4：%@",pic4);
             
         }else {
             
@@ -416,7 +417,7 @@
         [SVProgressHUD dismiss];
     }];
     
-    NSLog(@"当前tag:%d",currentTag);
+    NSLog(@"当前tag:%ld",(long)currentTag);
     UIButton *btn = [self.view viewWithTag:currentTag];
     //[btn setBackgroundImage:image forState:UIControlStateNormal];
     [btn setImage:image forState:UIControlStateNormal];

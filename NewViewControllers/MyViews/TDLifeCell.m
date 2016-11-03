@@ -8,6 +8,7 @@
 
 #import "TDLifeCell.h"
 #import "UIView+SDAutoLayout.h"
+#import "BusiIntf.h"
 @implementation TDLifeCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -35,17 +36,30 @@
         [self.contentView addSubview:self.btnNine];
         [self.contentView addSubview:self.btnTen];
 
-        self.btnOne.sd_layout.leftSpaceToView(self.contentView,16).topSpaceToView(self.contentView,10.5).widthIs(68.5).heightIs(68.5);
-        self.btnTwo.sd_layout.leftSpaceToView(self.contentView,89.5).topSpaceToView(self.contentView,10.5).widthIs(68.5).heightIs(68.5);
-        self.btnTrird.sd_layout.leftSpaceToView(self.contentView,163).topSpaceToView(self.contentView,10.5).widthIs(68.5).heightIs(68.5);
-        self.btnFour.sd_layout.leftSpaceToView(self.contentView,236.5).topSpaceToView(self.contentView,10.5).widthIs(68.5).heightIs(68.5);
-        self.btnFive.sd_layout.leftSpaceToView(self.contentView,16).topSpaceToView(self.contentView,86.5).widthIs(68.5).heightIs(68.5);
-        self.btnSix.sd_layout.leftSpaceToView(self.contentView,89.5).topSpaceToView(self.contentView,86.5).widthIs(68.5).heightIs(68.5);
-        self.btnSeven.sd_layout.leftSpaceToView(self.contentView,163).topSpaceToView(self.contentView,86.5).widthIs(68.5).heightIs(68.5);
-        self.btnEight.sd_layout.leftSpaceToView(self.contentView,236.5).topSpaceToView(self.contentView,86.5).widthIs(68.5).heightIs(68.5);
-        self.btnNine.sd_layout.leftSpaceToView(self.contentView,16).topSpaceToView(self.contentView,163).widthIs(68.5).heightIs(68.5);
-        self.btnTen.sd_layout.leftSpaceToView(self.contentView,89.5).topSpaceToView(self.contentView,163).widthIs(68.5).heightIs(68.5);
-        //self.btnOne.sd_layout.leftSpaceToView(self.contentView,16).topSpaceToView(self.contentView,10.5).widthIs(68.5).heightIs(68.5);
+        if ([BusiIntf curPayOrder].IsAPPStore) {
+            self.btnOne.sd_layout.leftSpaceToView(self.contentView,16).topSpaceToView(self.contentView,10.5).widthIs(92.6).heightIs(92.6);
+            self.btnTwo.sd_layout.leftSpaceToView(self.contentView,113.6).topSpaceToView(self.contentView,10.5).widthIs(92.6).heightIs(92.6);
+            self.btnTrird.sd_layout.leftSpaceToView(self.contentView,211.2).topSpaceToView(self.contentView,10.5).widthIs(92.6).heightIs(92.6);
+            self.btnFour.sd_layout.leftSpaceToView(self.contentView,16).topSpaceToView(self.contentView,108.6).widthIs(92.6).heightIs(92.6);
+            self.btnFive.sd_layout.leftSpaceToView(self.contentView,113.6).topSpaceToView(self.contentView,108.6).widthIs(92.6).heightIs(92.6);
+            
+            
+        }else {
+            self.btnOne.sd_layout.leftSpaceToView(self.contentView,16).topSpaceToView(self.contentView,10.5).widthIs(68.5).heightIs(68.5);
+            self.btnTwo.sd_layout.leftSpaceToView(self.contentView,89.5).topSpaceToView(self.contentView,10.5).widthIs(68.5).heightIs(68.5);
+            self.btnTrird.sd_layout.leftSpaceToView(self.contentView,163).topSpaceToView(self.contentView,10.5).widthIs(68.5).heightIs(68.5);
+            self.btnFour.sd_layout.leftSpaceToView(self.contentView,236.5).topSpaceToView(self.contentView,10.5).widthIs(68.5).heightIs(68.5);
+            self.btnFive.sd_layout.leftSpaceToView(self.contentView,16).topSpaceToView(self.contentView,86.5).widthIs(68.5).heightIs(68.5);
+            self.btnSix.sd_layout.leftSpaceToView(self.contentView,89.5).topSpaceToView(self.contentView,86.5).widthIs(68.5).heightIs(68.5);
+            self.btnSeven.sd_layout.leftSpaceToView(self.contentView,163).topSpaceToView(self.contentView,86.5).widthIs(68.5).heightIs(68.5);
+            self.btnEight.sd_layout.leftSpaceToView(self.contentView,236.5).topSpaceToView(self.contentView,86.5).widthIs(68.5).heightIs(68.5);
+            self.btnNine.sd_layout.leftSpaceToView(self.contentView,16).topSpaceToView(self.contentView,163).widthIs(68.5).heightIs(68.5);
+            self.btnTen.sd_layout.leftSpaceToView(self.contentView,89.5).topSpaceToView(self.contentView,163).widthIs(68.5).heightIs(68.5);
+            //self.btnOne.sd_layout.leftSpaceToView(self.contentView,16).topSpaceToView(self.contentView,10.5).widthIs(68.5).heightIs(68.5);
+        }
+        
+        
+        
         
     }
     

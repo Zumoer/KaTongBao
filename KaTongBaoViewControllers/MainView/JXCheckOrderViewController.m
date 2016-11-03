@@ -25,7 +25,7 @@
 @end
 
 @implementation JXCheckOrderViewController {
-    TDAlertViewController *alertViewController;
+    TDAlertViewController *AlertViewController;
     UILabel *GoodsNameLab;
     NSArray *arr;
     UITextField *textField;
@@ -171,6 +171,7 @@
         textField.sd_layout.centerYEqualToView(cell).leftSpaceToView(cell,20).widthIs(220).heightIs(40);
         
         BankLab = [[UILabel alloc] init];
+        BankLab.adjustsFontSizeToFitWidth = YES;
         [cell.contentView addSubview:BankLab];
         BankLab.hidden = YES;
         BankLab.sd_layout.leftSpaceToView(cell.contentView,20).topSpaceToView(cell.contentView,15).widthIs(71).heightIs(18);
@@ -189,6 +190,7 @@
         if(self.bankArray.count > 0) {
             textField.hidden = YES;
             BankLab.hidden = NO;
+            BankLab.adjustsFontSizeToFitWidth = YES;
             BankLab.text = [self.bankArray[0] objectForKey:@"bankName"];
             BankNumberLab.hidden = NO;
             [BusiIntf curPayOrder].AddBankNumber = [self.bankArray[0] objectForKey:@"bankNo"];
@@ -245,11 +247,11 @@
 //        
 //    }
     if (indexPath.section == 1 && indexPath.row == 0) { //银行卡信息
-        alertViewController = nil;
-        alertViewController = [[TDAlertViewController alloc] initWithNibName:@"TDAlertViewController" bundle:nil contentArray:self.bankArray titleStr:@"请选择银行卡" tag:3];
-        [alertViewController.view setBackgroundColor:[UIColor whiteColor]];
-        alertViewController.delegate = self;
-        [self presentPopupViewController:alertViewController animationType:MJPopupViewAnimationFade];
+        AlertViewController = nil;
+        AlertViewController = [[TDAlertViewController alloc] initWithNibName:@"TDAlertViewController" bundle:nil contentArray:self.bankArray titleStr:@"请选择银行卡" tag:3];
+        [AlertViewController.view setBackgroundColor:[UIColor whiteColor]];
+        AlertViewController.delegate = self;
+        [self presentPopupViewController:AlertViewController animationType:MJPopupViewAnimationFade];
     }
 }
 
@@ -260,17 +262,35 @@
         GoodsNameLab.text = arr[num];
     }else {   //银行卡
         [self dismissPopupViewControllerWithanimationType:MJPopupViewAnimationFade];
-        if (num < self.bankArray.count) {
+        NSArray *Array = nil;
+        
+        if (alertViewController.MidArray == nil) {
+            Array = self.bankArray;
+        }else {
+            Array = alertViewController.MidArray;
+        }
+        NSInteger row = 0;
+        
+        if (Array.count >= 5) {
+            row = 5;
+        }else {
+            row = Array.count;
+        }
+        
+        if (num < row) {
             textField.hidden = YES;
             BankLab.hidden = NO;
+            BankLab.adjustsFontSizeToFitWidth = YES;
             BankNumberLab.hidden = NO;
-            BankLab.text = [_bankArray[num] objectForKey:@"bankName"];
-            [BusiIntf curPayOrder].AddBankNumber = [_bankArray[num] objectForKey:@"bankNo"];
+            BankLab.text = [Array[num] objectForKey:@"bankName"];
+            [BusiIntf curPayOrder].AddBankNumber = [Array[num] objectForKey:@"bankNo"];
             BankNumberLab.text = [self rePlaceString:[BusiIntf curPayOrder].AddBankNumber];
             NSLog(@"%@",_bankArray[num]);
-        }else {
+        }else if (num == row){
             JXBankInfoViewController *JXBankInfoVC = [[JXBankInfoViewController alloc] init];
             [self.navigationController pushViewController:JXBankInfoVC animated:YES];
+        }else {
+            
         }
     }
 }
@@ -349,7 +369,7 @@
         NSMutableString *mutString = [NSMutableString stringWithString:string];
         NSInteger length = [mutString length];
         if (length>=6) {
-            [mutString replaceCharactersInRange:NSMakeRange(3, length-6) withString:@"********"];
+            [mutString replaceCharactersInRange:NSMakeRange(4, length-8) withString:@"********"];
         }else{
             
         }
@@ -392,6 +412,7 @@
 //    
 //    [self.view endEditing:YES];
 //}
+
 - (void)alert:(NSString *)msg{
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:msg delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
     [alert show];

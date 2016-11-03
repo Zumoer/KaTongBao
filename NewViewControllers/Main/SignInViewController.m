@@ -16,6 +16,7 @@
 #import "AboutTextViewController.h"
 #import "macro.h"
 #import "JXPayProtrolViewController.h"
+#import <CommonCrypto/CommonDigest.h>
 @implementation SignInViewController {
     NSTimer *timer;
     UIButton *btn;

@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>银行卡绑定</title>
+  <link rel="stylesheet" href="assets/css/amazeui.min.css">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <script type="text/javascript" src="assets/js/zepto.min.js"></script>
+  <script src="assets/js/app.js"></script>
+</head>
+<body class="index_app">
+    <input type="hidden" id="withholdBillNo">
+    <header class="cardTop">持卡人：<em id="uName"></em></header>
+    <section class="main">
+        <div class="am-g selectBank">
+            <div class="for-select">
+                <select class="selectBankCards" id="selectBank" data-Id="">
+                    <option>请选择银行</option>
+                </select>
+            </div>
+            
+            <div class="select-t">请选择银行</div>
+        </div>
+        <div class="am-g for-ele mt20 bankCardsNum">
+            <div class="am-g-e am-g">
+                <input type="tel" class="dxCode am-u-sm-10" placeholder="输入银行卡号" maxlength="25" id="bankCardsNum">
+            </div>
+        </div>        
+    </section>
+    <section class="main mt20">
+        <div class="for-ele am-g">
+            <input type="tel" class="phone am-u-sm-10" placeholder="请输入手机号" maxlength="11" id="phone">
+            <div class="am-u-sm-2 h32">
+              <i class="icon-msg"></i>
+            </div>
+        </div>
+        <div class="am-g for-ele">
+            <div class="am-g-e am-g am-g-e-l">
+                <input type="tel" class="dxCode am-u-sm-10" id="dxCode" placeholder="手机验证码" maxlength="6">
+                <div class="am-u-sm-2 h32">
+                  <i class="icon-msg"></i>
+                </div>
+            </div>
+            <div class="am-g-e2 am-g-e-r">
+                <input type="button" value="获取验证码" id="sendCode" class="getBtn" onclick="sendBindCardsCode()">
+            </div>
+        </div>        
+    </section>
+    <div class="card-msg">银行卡必须是持卡人所有!</div>
+    <div class="btnWrap">
+      <input type="button" value="立即绑定" class="am-btn am-btn-primary sbtn" id="bindBtn" onclick="bindSumitData()">
+    </div>
+<div class="loading" style="position:fixed;background:#000;opacity:.8;padding:5px;border-radius:4px;left:50%;top:50%;margin-top:-25px;margin-left:-25px; display:none">
+  <img src="http://m.ppdaicdn.com/home/images/loading.gif" width="50" height="50">
+</div>
+</body>
+</html>
+<script>
+  PPD_SDK.bindCardsInit();
+  var isIOS = navigator.userAgent.match('iPad') 
+             || navigator.userAgent.match('iPhone') 
+             || navigator.userAgent.match('iPod');
+
+  var loadJS = function(name){
+      var oHead = document.getElementsByTagName('HEAD').item(0); 
+      var oScript= document.createElement("script"); 
+      oScript.type = "text/javascript"; 
+      oScript.src= name; 
+      oHead.appendChild(oScript);
+  }
+
+  if(isIOS){
+      loadJS('assets/js/bind_ios.js?v=1.0')
+  }else{
+      loadJS('assets/js/bind_android.js?v=1.0')
+  }
+</script>

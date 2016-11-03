@@ -17,9 +17,14 @@
 #import "IBHttpTool.h"
 #import "Common.h"
 #import "GuidViewController.h"
+#import "PPDLoanSdk.h"
+
+#define PPDSDK_sKeyAPPID @"bc76e4ee44fb4a07b7943e70111069de"
+#define PPDSDK_PubKey @"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCZeZxVixhB7a6v4QIVKYuLU+kuQNcrmqp1G1s7MV5mMIIYxCsqx3gR5T4yHHh3N82tszy2Ri37dIZhxpIqGjrnZy3c2lXMyHTuOAthdwwkzW5XZSKHJ7GVPQN8rryspEFjw52okuuaqOYudOvvAZYD3QmT7NdXYojCipOihkTxpQIDAQAB"
+#define PPDSDK_PriKey @"MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAJl5nFWLGEHtrq/hAhUpi4tT6S5A1yuaqnUbWzsxXmYwghjEKyrHeBHlPjIceHc3za2zPLZGLft0hmHGkioaOudnLdzaVczIdO44C2F3DCTNbldlIocnsZU9A3yuvKykQWPDnaiS65qo5i506+8BlgPdCZPs11diiMKKk6KGRPGlAgMBAAECgYEAlmqo/PIJQTxY1AmcB++i01fXFrz35cV9QK8iF/6HvXHXX7yLbi73D9r0vRpIOtfXXmFnpGFd2a/XsOZ0BI2WogWcHsHlTJmL3oVAnwttAbNoHSyvsbDlJjmeLdYSdlqBfBNSa+EhNI4OnT77+Gd3hNqcvqVZIVF+PQSmLoYMrHUCQQDTOWB6DntK7i/8HDK27fHeLpYWWziykwzR5EkLwWXqlI1yjQQTv07asUrUaQzKG94ZzLyvFtFofbrlks1xkYv3AkEAugJUlWohdNHkP5i1pLVstFOSwKfyN1CitFoZbBkz2oFbFQ031rh/1CP4EiDZE3GJjMms6N4IvwmvRqSd0skwQwJAcd1PXdzqp/UI1w5YZHaW2SAh9oFMai+NTKSUoAqspy1XpvXPydlqZ8gFP8Y1h8pIC35sBLL3Ri3pD5L4vw0n9wJBAJkQ1d3magWhuvwChGc3zG5P35GeIpoWRu22vvjPfHYwwG0AZZTSWo6N0tPIKBnx8kjipOEz5WqfY5b0W9NbL9UCQFGxuWfQPZypDxvGmtIKA1fc0FTP5iK98rpM2btTOguyuneDg7Y2iATQe4JWjjBhtE6e+5OLgIMZeG35kksxXcw="
+
 
 @interface AppDelegate ()
-
 
 @end
 //@implementation NSURLRequest(DataController)
@@ -43,8 +48,9 @@
 //    nav.toolbarHidden = YES;
 //    self.window.rootViewController = nav;
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]) {
-            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstLaunch"];
-            NSLog(@"第一次启动!");
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstLaunch"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        NSLog(@"第一次启动!");
     
         GuidViewController *GuidVc = [[GuidViewController alloc] init];
         UINavigationController *nav = [[UINavigationController alloc]initWithRootViewController:GuidVc] ;
@@ -79,13 +85,16 @@
     //[[PgyUpdateManager sharedPgyManager] startManagerWithAppId:APPID];
     //[[PgyUpdateManager sharedPgyManager] checkUpdate];
     //[[PgyUpdateManager sharedPgyManager] checkUpdateWithDelegete:self selector:@selector(UpDateMethod:)];
-    //功夫贷
+    
     
 //    [[GFDPlugin sharedInstance] setAppID:@"katongbao"];
 //    [[GFDPlugin sharedInstance] setAppKey:@"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCYA1gYvLkQTZfsEAoWRFCbF6uOIHwjEjX82MJ JTp2FUJq0DfJ4pmyAY7PvZ0iI/KzSzzfW07dFL9kjYJwX9rn1sMEa3POxtznJcmJI1qoW8PPeUyY2BWgHhTgFwBl+leSc+4MWua7ljNjr6Mndot8EWEqdrN0L2zQvTzMa3IfQQIDAQAB"];
     
+    //功夫贷
     [[GFDPlugin sharedInstance] setupAPPID:@"katongbao" appKey:@"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCYA1gYv/LkQTZfsEAoWRFCbF6uOIHwjEjX82MJJTp2FUJq0DfJ4pmyAY7PvZ0iI/KzSzzfW07dFL9kjYJwX9rn1sMEa3POxtznJcmJI1qoW8PPeUyY2BWgHhTgFwBl+leSc+4MWua7ljNjr6Mndot8EWEqdrN0L2zQvTzMa3IfQQIDAQAB"];
     
+    //小贷
+    [LoansSDK loadPPDLoanSDKInit:PPDSDK_sKeyAPPID publicKey:PPDSDK_PubKey privateKey:PPDSDK_PriKey];
     
     //检测更新
     [self RequestForVersionUpdate];
@@ -123,7 +132,7 @@
     CGFloat offset = launchView.frame.size.width - [[UIScreen mainScreen] bounds].size.width;//图片有一个像素空白
     //    return YES;
     
-    UIImageView *imgLogo = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"进入页-"]];
+    UIImageView *imgLogo = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"卡捷通引导页-"]];
     imgLogo.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
     //    imgLogo.center = CGPointMake([UIScreen mainScreen].bounds.size.width / 2, [UIScreen mainScreen].bounds.size.height / 4);
     [self.window addSubview:imgLogo];
@@ -169,9 +178,11 @@
     
     if (response != nil) {
         [user setObject:@"0" forKey:@"IsViewNew"];
+        [user synchronize];
         
     } else {
         [user setObject:@"1" forKey:@"IsViewNew"];
+        [user synchronize];
         
     }
     

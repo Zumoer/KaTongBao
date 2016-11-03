@@ -70,11 +70,11 @@
     UILabel *DisPlayLab = [[UILabel alloc] init];
     
     if (self.tag == 100) {  //卡通宝普通
-        DisPlayLab.text = @"卡通宝普通结算";
+        DisPlayLab.text = @"普通结算";
         [BusiIntf curPayOrder].TypeOrder = @"T1";
         PayType = @"1";
     }else if(self.tag == 101){  //卡通宝快捷
-        DisPlayLab.text = @"卡通宝快捷结算";
+        DisPlayLab.text = @"快捷结算";
         [BusiIntf curPayOrder].TypeOrder = @"T0";
         PayType = @"1";
     }else if(self.tag == 102){   //微信

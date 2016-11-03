@@ -22,6 +22,7 @@
 #import "SVProgressHUD.h"
 #import "JXPayProtrolViewController.h"
 #import "GiFHUD.h"
+#import "WLDecimalKeyboard.h"
 @interface JXPayWithOrderViewController ()
 
 @end
@@ -58,7 +59,9 @@
     MesageCell *ValidDateCell;
     MesageCell *CVVCell;
     MesageCell *PhoneCell;
-    
+    UIButton *SelfCardBtn;
+    NSUserDefaults *user;
+    WLDecimalKeyboard *WLKeyBoard;
 }
 - (void)viewWillAppear:(BOOL)animated {
     
@@ -72,6 +75,8 @@
     _isSelf = [NSNumber numberWithInt:[[BusiIntf curPayOrder].BankIsSelf integerValue]];
     NSLog(@"isself:%@",_isSelf);
     _cardType = [BusiIntf curPayOrder].BankCardType;
+    
+    WLKeyBoard = [[WLDecimalKeyboard alloc] init];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -219,7 +224,55 @@
     LineThree.backgroundColor = Gray136;
     LineFour = [[UIImageView alloc] init];
     LineFour.backgroundColor = Gray136;
+    
+    //本人卡按钮
+    SelfCardBtn = [[UIButton alloc] init];
+    [SelfCardBtn setTitle:@"本人卡？" forState:UIControlStateNormal];
+    SelfCardBtn.layer.cornerRadius = 3;
+    SelfCardBtn.titleLabel.font = [UIFont systemFontOfSize:13];
+    SelfCardBtn.backgroundColor = NavBack;
+    [SelfCardBtn addTarget:self action:@selector(SelfCard) forControlEvents:UIControlEventTouchUpInside];
+    
 }
+
+//本人卡按钮
+- (void)SelfCard {
+    [self RequestForName];
+}
+
+//获取下商户姓名
+- (void)RequestForName {
+    NSString *url = JXUrl;
+    user = [NSUserDefaults standardUserDefaults];
+    NSString *token = [user objectForKey:@"token"];
+    NSString *key = [user objectForKey:@"key"];
+    NSString *md5 = [NSString stringWithFormat:@"%@",key];
+    NSString *sign = [self md5HexDigest:md5];
+    NSDictionary *dic1 = @{
+                           @"token":token,
+                           @"sign":sign
+                           };
+    NSDictionary *dicc = @{
+                           @"action":@"shopInfoState",
+                           @"data":dic1
+                           };
+    NSString *params = [dicc JSONFragment];
+    //NSLog(@"参数：%@",params);
+    [IBHttpTool postWithURL:url params:params success:^(id result) {
+        NSDictionary *dicc = [result JSONValue];
+        //NSLog(@"返回数据：%@",dicc);
+        [BusiIntf curPayOrder].bankAccont = (NSString *)dicc[@"shopAccount"];  //结算卡账号
+        [BusiIntf curPayOrder].shopCard = (NSString *)dicc[@"shopCert"];
+        NameStr = [BusiIntf curPayOrder].bankAccont;
+        NameCell.textFiled.text = [BusiIntf curPayOrder].bankAccont;
+        CardID = [BusiIntf curPayOrder].shopCard;
+        CertCell.textFiled.text = [BusiIntf curPayOrder].shopCard;
+    } failure:^(NSError *error) {
+        NSLog(@"网络申请失败:%@",error);
+    }];
+}
+
+//协议
 - (void)Propol {
     
     JXPayProtrolViewController *protrol = [[JXPayProtrolViewController alloc] init];
@@ -526,8 +579,11 @@
             if (indexPath.row == 4) {
                 _sendCell = [[SendMegCell alloc] init];
                 _sendCell.text.tag = 110;
+                _sendCell.text.delegate = self;
+                _sendCell.text.inputView = WLKeyBoard;
+                [_sendCell.text reloadInputViews];
                 [_sendCell.button addTarget:self action:@selector(clickAction:) forControlEvents:UIControlEventTouchUpInside];
-                _sendCell.text.keyboardType = UIKeyboardTypeNumberPad;
+                //_sendCell.text.keyboardType = UIKeyboardTypeNumberPad;
                 [_sendCell.sendButton addTarget:self action:@selector(reSendAction:) forControlEvents:UIControlEventTouchUpInside];
                 _sendCell.button.hidden = NO;
                 cell = _sendCell;
@@ -567,6 +623,7 @@
                 _sendCell = [[SendMegCell alloc] init];
                 _sendCell.text.tag = 102;
                 _sendCell.text.delegate = self;
+                
                 [_sendCell.button addTarget:self action:@selector(clickAction:) forControlEvents:UIControlEventTouchUpInside];
                 _sendCell.text.keyboardType = UIKeyboardTypeNumberPad;
                 [_sendCell.sendButton addTarget:self action:@selector(reSendAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -584,9 +641,16 @@
                 NameCell.textFiled.text = NameStr;
                 NameCell.textFiled.tag = 200;
                 NameCell.textFiled.delegate = self;
+                
+                [NameCell.contentView addSubview:SelfCardBtn];
+                SelfCardBtn.sd_layout.rightSpaceToView(NameCell.contentView,26.5).topSpaceToView(NameCell.contentView,7).widthIs(90).heightIs(26.5);
+                
                 if ([_isSelf isEqual:@1] || self.tag == 101) {
                     NameCell.textFiled.text = [BusiIntf curPayOrder].bankAccont;
                     NameCell.textFiled.enabled = NO;
+                }else {
+                    
+                    
                 }
                 cell = NameCell;
 //                [cell.contentView addSubview:LineOne];
@@ -617,8 +681,11 @@
                 ValidDateCell.label.text = @"有效期";
                 ValidDateCell.textFiled.tag = 104;
                 ValidDateCell.textFiled.delegate = self;
+//                WLDecimalKeyboard *WLDKeyBoard = [[WLDecimalKeyboard alloc] init];
+                ValidDateCell.textFiled.inputView = WLKeyBoard;
+                [ValidDateCell.textFiled reloadInputViews];
                 ValidDateCell.textFiled.text = YXQ;
-                ValidDateCell.textFiled.keyboardType = UIKeyboardTypeNumberPad;
+                //ValidDateCell.textFiled.keyboardType = UIKeyboardTypeNumberPad;
                 ValidDateCell.textFiled.placeholder = @"有效期,月/年(如06/15输入0615)";
                 //测试
                 //megcell.textFiled.text = @"1220";
@@ -630,7 +697,9 @@
                 CVVCell.textFiled.delegate = self;
                 CVVCell.textFiled.text = CVV;
                 CVVCell.textFiled.tag = 105;
-                CVVCell.textFiled.keyboardType = UIKeyboardTypeNumberPad;
+               // CVVCell.textFiled.keyboardType = UIKeyboardTypeNumberPad;
+                CVVCell.textFiled.inputView = WLKeyBoard;
+                [CVVCell.textFiled reloadInputViews];
                 CVVCell.textFiled.placeholder = @"CVV2,卡背后三位";
                 //测试
                 // megcell.textFiled.text = @"600";
@@ -641,8 +710,11 @@
                 PhoneCell = [[MesageCell alloc] init];
                 PhoneCell.label.text = @"手机号";
                 PhoneCell.textFiled.tag = 106;
+                PhoneCell.textFiled.delegate = self;
                 PhoneCell.textFiled.text = PhoneNum;
-                PhoneCell.textFiled.keyboardType = UIKeyboardTypeNumberPad;
+               // PhoneCell.textFiled.keyboardType = UIKeyboardTypeNumberPad;
+                PhoneCell.textFiled.inputView = WLKeyBoard;
+                [PhoneCell.textFiled reloadInputViews];
                 PhoneCell.textFiled.placeholder = @"银行预留手机号";
                 //测试
                 //megcell.textFiled.text = @"15228935891";
@@ -658,7 +730,11 @@
                 _sendCell = [[SendMegCell alloc] init];
                 _sendCell.text.tag = 107;
                 _sendCell.text.delegate = self;
-                _sendCell.text.keyboardType = UIKeyboardTypeNumberPad;
+                //_sendCell.text.keyboardType = UIKeyboardTypeNumberPad;
+                //WLDecimalKeyboard *WLKeyBoard = [[WLDecimalKeyboard alloc] init];
+                _sendCell.text.inputView = WLKeyBoard;
+                [_sendCell.text reloadInputViews];
+                
                 [_sendCell.button addTarget:self action:@selector(clickAction:) forControlEvents:UIControlEventTouchUpInside];
                 [_sendCell.sendButton addTarget:self action:@selector(reSendAction:) forControlEvents:UIControlEventTouchUpInside];
                 _sendCell.button.hidden = NO;
@@ -922,6 +998,7 @@
     }
 }
 
+#define mark - TextFiledDeleage
 //短信发送textfiled点击上移和收缩
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
     UITextField *text = [self.view viewWithTag:107];
@@ -1000,11 +1077,35 @@
     return YES;
 }
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    [textField resignFirstResponder];
+    return YES;
+    
+}
+
 -(void)alertMsg: (NSString *)msg
 {
     UIAlertView * alter = [[UIAlertView alloc] initWithTitle:@"提示" message: msg delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
     alter.delegate = self;
     [alter show];
+}
+
+//隐私信息打*处理
+-(NSString*)rePlaceString:(NSString*)string{
+    if (![string isKindOfClass:[NSString class]]) {
+        return @"";
+    }else{
+        NSMutableString *mutString = [NSMutableString stringWithString:string];
+        NSInteger length = [mutString length];
+        if (length>=6) {
+            [mutString replaceCharactersInRange:NSMakeRange(4, length-8) withString:@"********"];
+        }else{
+            
+        }
+        
+        return (NSString*)mutString;
+    }
 }
 
 //视图消失的时候将本人卡设为“1”

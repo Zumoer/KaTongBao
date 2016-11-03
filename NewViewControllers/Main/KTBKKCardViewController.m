@@ -43,12 +43,19 @@
     UIImageView *BackImg = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, KscreenWidth, KscreenHeight)];
     BackImg.backgroundColor = LightGrayColor;
     [self.view addSubview:BackImg];
+    UIScrollView *Scroller = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, KscreenWidth, KscreenHeight - 64)];
+    Scroller.contentSize = CGSizeMake(KscreenWidth, KscreenHeight);
+    if (KscreenHeight < 568) {
+        Scroller.frame = CGRectMake(0, 0, KscreenWidth, KscreenHeight + 20);
+        Scroller.contentSize = CGSizeMake(KscreenWidth, KscreenHeight + 100);
+    }
+    [self.view addSubview:Scroller];
     //背景绿
     UIImageView *BigGreenImg = [[UIImageView alloc] init];
     BigGreenImg.backgroundColor = Color(32, 162, 49);
     BigGreenImg.layer.cornerRadius = 3;
-    [self.view addSubview:BigGreenImg];
-    BigGreenImg.sd_layout.leftSpaceToView(self.view,16).rightSpaceToView(self.view,16).topSpaceToView(self.view,40).bottomSpaceToView(self.view,50);
+    [Scroller addSubview:BigGreenImg];
+    BigGreenImg.sd_layout.leftSpaceToView(Scroller,16).rightSpaceToView(Scroller,16).topSpaceToView(Scroller,40).bottomSpaceToView(Scroller,50);
     //名字
     UILabel *NameLab = [[UILabel alloc] init];
     NameLab.text = [BusiIntf getUserInfo].ShopName;
@@ -117,7 +124,6 @@
     LastLab.textAlignment = NSTextAlignmentCenter;
     [BigGreenImg addSubview:LastLab];
     LastLab.sd_layout.topSpaceToView(TipsLab,0).centerXEqualToView(BigGreenImg).bottomSpaceToView(BigGreenImg,5).widthIs(KscreenWidth);
-
 }
 
 //隐私信息打*处理 （电话）

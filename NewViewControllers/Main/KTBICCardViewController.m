@@ -81,7 +81,20 @@
     TapGes = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(TapToDetail)];
     TapGes.numberOfTapsRequired = 1;
     
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"服务条款声明" style:UIBarButtonItemStyleDone target:self action:@selector(ToServiceProtocol)];
     
+    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Helvetica-Bold"size:13.0],NSFontAttributeName,[UIColor whiteColor],NSForegroundColorAttributeName,nil]  forState:UIControlStateNormal];
+    
+    if (![[BusiIntf curPayOrder].CardVIPIcon isEqualToString:@""]) {
+        [HeaderView sd_setImageWithURL:[NSURL URLWithString:[BusiIntf curPayOrder].CardVIPIcon]];
+    }else {
+        HeaderView.image = [UIImage imageNamed:@"会员专享-免费申请-"];
+    }
+    if (![[BusiIntf curPayOrder].IsVip isEqualToString:@"1"]) {
+        Btn.hidden = YES;
+        Table.height = KscreenHeight;
+    }
+
     //[BusiIntf curPayOrder].IsVip = @"1";
       //[BusiIntf curPayOrder].IsGetCardVip = [NSString stringWithFormat:@"%@",[BusiIntf curPayOrder].IsGetCardVip] ;
       //[BusiIntf curPayOrder].IsGetSafeVip = [NSString stringWithFormat:@"%@",[BusiIntf curPayOrder].IsGetSafeVip];
@@ -112,20 +125,7 @@
 //        
 //    }else {    //联民信用卡
 //        
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"服务条款声明" style:UIBarButtonItemStyleDone target:self action:@selector(ToServiceProtocol)];
-        
-        [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Helvetica-Bold"size:13.0],NSFontAttributeName,[UIColor whiteColor],NSForegroundColorAttributeName,nil]  forState:UIControlStateNormal];
-
-        if (![[BusiIntf curPayOrder].CardVIPIcon isEqualToString:@""]) {
-            [HeaderView sd_setImageWithURL:[NSURL URLWithString:[BusiIntf curPayOrder].CardVIPIcon]];
-        }else {
-            HeaderView.image = [UIImage imageNamed:@"会员专享-免费申请-"];
-        }
-        if (![[BusiIntf curPayOrder].IsVip isEqualToString:@"1"]) {
-            Btn.hidden = YES;
-            Table.height = KscreenHeight;
-        }
-//        else if ([[BusiIntf curPayOrder].IsGetCardVip isEqualToString:@"1"]) {
+        //        else if ([[BusiIntf curPayOrder].IsGetCardVip isEqualToString:@"1"]) {
 //            [Btn setTitle:@"领取处理中" forState:UIControlStateNormal];
 //            [Btn setBackgroundColor:CommonOrange];
 //            Btn.enabled = NO;
@@ -153,14 +153,12 @@
 
 - (void)GetVip {
     
-   // NSLog(@"234234234234234234");
-    
+   
 //    if (self.tag == 101) {
 //        [self RequestForVipMetch:@"SAFE"];
 //    }else {
 //        [self RequestForVipMetch:@"CARD"];
 //    }
-    
     
     KTBCreateCardViewController *KTBCreatCard = [[KTBCreateCardViewController alloc] init];
     KTBCreatCard.tag = 1;
@@ -305,7 +303,7 @@
     } failure:^(NSError *error) {
         
         NSLog(@"网络错误!!");
-        [self alert:error];
+        //[self alert:error];
     }];
 }
 

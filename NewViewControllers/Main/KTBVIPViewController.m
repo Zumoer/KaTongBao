@@ -20,12 +20,24 @@
 #import "SVProgressHUD.h"
 #import "GiFHUD.h"
 
+#import "UIImage+scale.h"
+#import "PhotoPickerController.h"
+#import "ImagePickerController.h"
+#import "ImageManager.h"
+#import <Photos/Photos.h>
+#import "SJAvatarBrowser.h"
+@interface KTBVIPViewController ()<ImagePickerControllerDelgate>
+
+@property(nonatomic,strong)UIImageView *HeaderView;
+@end
+
 @implementation KTBVIPViewController {
     
     NSString *vipFlg;
     UIImageView *FirstWhietImg;
     UIImageView *HeaderBackImg;
     NSUserDefaults *user;
+    //UIImageView *HeaderView;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -45,13 +57,14 @@
                                                                       NSForegroundColorAttributeName:[UIColor whiteColor]
                                                                       }];
     self.navigationController.navigationBar.barTintColor = NavBack;
-    
+    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     [self RequestForBaseInfo];
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
+    user = [NSUserDefaults standardUserDefaults];
     
     UIImageView *BackImg = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, KscreenWidth, KscreenHeight)];
     BackImg.backgroundColor = LightGrayColor;
@@ -83,10 +96,23 @@
     HeaderBackImg.hidden = YES;
     [self.view addSubview:HeaderBackImg];
     
-    UIImageView *HeaderView = [[UIImageView alloc] init];
-    HeaderView.image = [UIImage imageNamed:@"Avatar-sample-17"];
-    [HeaderBackImg addSubview:HeaderView];
-    HeaderView.sd_layout.centerXEqualToView(HeaderBackImg).centerYEqualToView(HeaderBackImg).widthIs(88).heightIs(88);
+    UITapGestureRecognizer *TapToMagOut = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(MagOut)];
+    UILongPressGestureRecognizer *LongPressToSelectPhoto = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(LongPressToSelectPhoto:)];
+    
+    self.HeaderView = [[UIImageView alloc] init];
+    if ( [user objectForKey:@"VipTX"] == nil) {
+        self.HeaderView.image = [UIImage imageNamed:@"Avatar-sample-374"];
+    }else {
+        self.HeaderView.image = [UIImage imageWithData:[user objectForKey:@"VipTX"]];
+    }
+    
+    self.HeaderView.userInteractionEnabled = YES;
+    self.HeaderView.layer.cornerRadius = 3;
+    self.HeaderView.layer.masksToBounds = YES;
+    [self.HeaderView addGestureRecognizer:TapToMagOut];
+    [self.HeaderView addGestureRecognizer:LongPressToSelectPhoto];
+    [HeaderBackImg addSubview:self.HeaderView];
+    self.HeaderView.sd_layout.centerXEqualToView(HeaderBackImg).centerYEqualToView(HeaderBackImg).widthIs(88).heightIs(88);
     
     UILabel *NameLab = [[UILabel alloc] init];
     NameLab.text = [NSString stringWithFormat:@"Hi,%@",[BusiIntf getUserInfo].ShopName];
@@ -94,7 +120,7 @@
     NameLab.textColor = [UIColor whiteColor];
     NameLab.backgroundColor = [UIColor clearColor];
     [HeaderBackImg addSubview:NameLab];
-    NameLab.sd_layout.centerXEqualToView(HeaderBackImg).topSpaceToView(HeaderView,5).widthIs(200).heightIs(36);
+    NameLab.sd_layout.centerXEqualToView(HeaderBackImg).topSpaceToView(self.HeaderView,5).widthIs(200).heightIs(36);
 
     //会员权益
     UIImageView *SecondWhietImg = [[UIImageView alloc] init];
@@ -129,6 +155,54 @@
     
     SecondWhietImg.sd_layout.leftSpaceToView(self.view,0).rightSpaceToView(self.view,0).topSpaceToView(FirstWhietImg,10).heightIs(120);
     
+}
+//放大图片
+- (void)LongPressToSelectPhoto:(UILongPressGestureRecognizer *)press {
+    
+    if (press.state == UIGestureRecognizerStateEnded) {
+        return;
+    }else {
+       
+        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+            if (status == PHAuthorizationStatusAuthorized) {
+                ImagePickerController *alubmPicker = [[ImagePickerController alloc] initWithDelegate:self];
+                [self presentViewController:alubmPicker animated:YES completion:nil];
+            }else {
+                [self showSetting];
+            }
+        }];
+    }
+
+}
+
+#pragma mark - SelectPhoto
+- (void)MagOut {
+    
+    
+     [SJAvatarBrowser showImage:self.HeaderView];
+}
+
+- (void)showSetting {
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"提示" message:@"请在系统设置中打开“允许访问图片”，否则将无法获取相机的图片" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancle = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:nil];
+    UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"去开启" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+    }];
+    [alertVC addAction:cancle];
+    [alertVC addAction:confirm];
+    [self presentViewController:alertVC animated:YES completion:nil];
+}
+
+#pragma mark - ImagePickerControllerDelgate
+- (void)imagePickerController:(PhotoPickerController *)imagePickerController didFinished:(UIImage *)editedImage {
+    self.HeaderView.image = nil;
+    self.HeaderView.image = [editedImage scaleImage];
+    NSData *VipTXData = UIImageJPEGRepresentation([editedImage scaleImage], 1);
+    [user setObject:VipTXData forKey:@"VipTX"];
+    [user synchronize];
+    //    self.imageView.image = editedImage;
+    NSLog(@"vc--%@", self.HeaderView.image);
+    [imagePickerController dismissViewControllerAnimated:YES completion:nil];
 }
 
 //下一步
@@ -312,6 +386,7 @@
     NSString *mdfiveString = [hash lowercaseString];
     return mdfiveString;
 }
+
 - (void)alert:(NSString *)msg{
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:msg delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
     [alert show];

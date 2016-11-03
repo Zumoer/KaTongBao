@@ -87,8 +87,8 @@
 #define APPLOGONAME      @"logo96.png"        //logo图片名称 用于分享功能/版本信息LOGO
 #define APPURLMESSAGE    @"V1.0"                    //版本信息message
 #define APPP01           @"信用卡图片6.png"
-#define APPP02           @"功夫贷3.png"
-#define APPP03           @"信用卡图片3.png"
+#define APPP02           @"拍拍贷广告.png"
+#define APPP03           @"拍拍贷广告New.png"
 #define APPP04           @"YZ4.png"
 #define APPPTITLE        @"logo.png"
 

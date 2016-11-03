@@ -104,7 +104,7 @@
     } {
         
     }
-    
+    NSLog(@"codeimgurl:%@",_codeImgUrl);
     CodeImg.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.codeImgUrl]]];
     CodeImg.userInteractionEnabled = YES;
     //[CodeImg addGestureRecognizer:tap];
@@ -201,7 +201,7 @@
 
 {
     
-    NSString *message = @"呵呵";
+    NSString *message = @"";
     
     if (!error) {
         

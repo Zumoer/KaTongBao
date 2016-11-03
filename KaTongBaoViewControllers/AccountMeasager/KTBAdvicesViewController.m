@@ -61,6 +61,7 @@
     TextView.backgroundColor = [UIColor whiteColor];
     TextView.layer.cornerRadius = 3;
     TextView.font = [UIFont systemFontOfSize:16];
+    TextView.delegate = self;
     [self.view addSubview:TextView];
     TextView.sd_layout.leftSpaceToView(self.view,20).topSpaceToView(self.view,8).rightSpaceToView(self.view,20).bottomSpaceToView(self.view,100);
     
@@ -75,6 +76,14 @@
 }
 //发送消息
 - (void)Send {
+    
+    
+    if ([TextView.text isEqualToString:@""])  {
+        
+        [self alert:@"先说点什么再提交吧:)!"];
+        return;
+        
+    }
     
     NSString *url = JXUrl;
     NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
@@ -125,6 +134,9 @@
     }];
 
 }
+
+
+
 - (void)backToRootView {
     [self.navigationController popToRootViewControllerAnimated:YES];
 }

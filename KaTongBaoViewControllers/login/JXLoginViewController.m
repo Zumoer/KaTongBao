@@ -391,6 +391,7 @@
         [user setObject:key forKey:@"key"];
         [user setObject:YyToken forKey:@"YyToken"];
         [user setObject:YySign forKey:@"YySign"];
+        [user synchronize];
         NSLog(@"登陆key:%@...token:%@",dic[@"key"],dic[@"auth"]);
         if ([code isEqualToString:@"000000"]) {
             [self.navigationController pushViewController:tabbarController animated:YES];

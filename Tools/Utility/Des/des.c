@@ -19,7 +19,8 @@
  */
 
 #include "des.h"
-
+#include <stdio.h>
+#include <string.h>
 /* the eight DES S-boxes */
 
 uint32 SB1[64] =
@@ -521,8 +522,8 @@ void test( void )
     des2DecryptWithKey((unsigned char*)"\xeb\xfb\x4d\x5b\xe4\x2e\x80\x77\x96\x88\x14\x41\x9c\x46\xb7\xc5",
                 (unsigned char*)"\x01\x23\x45\x67\x89\xab\xcd\xef\xfe\xdc\xba\x98\x76\x54\x32\x10",
                 output);
-    for (int j=0; j<16; j++)
-        printf("%02.2x ", output[j]);
+    for (int j=0; j<16; j++);
+       // printf("%02.2x ", output[j]);
 }
 
 //#endif

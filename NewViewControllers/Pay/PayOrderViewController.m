@@ -128,7 +128,7 @@
     
     WuJieT1Btn = [[UIButton alloc] init];
     WuJieT1Btn.tag = 101;
-    [WuJieT1Btn setBackgroundImage:[UIImage imageNamed:@"卡通宝APP图标.png"] forState:UIControlStateNormal];
+    [WuJieT1Btn setBackgroundImage:[UIImage imageNamed:@"卡捷通图标.png"] forState:UIControlStateNormal];
     [WuJieT1Btn addTarget:self action:@selector(pay:) forControlEvents:UIControlEventTouchUpInside];
     [PuTongBackImg addSubview:WuJieT1Btn];
     WuJieT1Btn.sd_layout.leftSpaceToView(PuTongBackImg,112.5).topSpaceToView(PuTongBackImg,53.5).widthIs(63.5).heightIs(63.5);
@@ -156,7 +156,7 @@
     KuaiJieLab.sd_layout.leftSpaceToView(KBackImg,17.5).topSpaceToView(KBackImg,15.5).widthIs(70).heightIs(17.5);
     WuJieT0Btn = [[UIButton alloc] init];
     WuJieT0Btn.tag = 103;
-    [WuJieT0Btn setBackgroundImage:[UIImage imageNamed:@"卡通宝APP图标.png"] forState:UIControlStateNormal];
+    [WuJieT0Btn setBackgroundImage:[UIImage imageNamed:@"卡捷通图标.png"] forState:UIControlStateNormal];
     [WuJieT0Btn addTarget:self action:@selector(pay:) forControlEvents:UIControlEventTouchUpInside];
     [KBackImg addSubview:WuJieT0Btn];
     WuJieT0Btn.sd_layout.leftSpaceToView(KBackImg,112.5).topSpaceToView(KBackImg,53.5).widthIs(63.5).heightIs(63.5);
@@ -176,8 +176,8 @@
     
     [self.navigationController popViewControllerAnimated: YES];
     
-    
 }
+
 //点击收款
 - (void)pay:(UIButton *)btn {
     
@@ -320,6 +320,7 @@
                 [user setObject:url forKey:@"AN1url"];
                 [user setObject:minPrice forKey:@"AN1MIN"];
             }
+            [user synchronize];
         }
         
         NSLog(@"%@",[user objectForKey:@"T1url"]);
@@ -378,6 +379,7 @@
         [SVProgressHUD dismiss];
     }];
 }
+
 //银行列表
 - (void)RequestForBank:(NSString *)Type {
     

@@ -23,6 +23,9 @@
 #import "PubFunc.h"
 #import "JXOrderListViewController.h"
 #import "SJAvatarBrowser.h"
+#import <CommonCrypto/CommonDigest.h>
+#import "WLDecimalKeyboard.h"
+
 #define TAG_BTN_BACK       9990001
 #define TAG_INDICATOR       999002
 #define TAG_INDICATOR_BACK   999003
@@ -151,7 +154,7 @@
     [BackImg addGestureRecognizer:TapToResignKeyBoard];
     //logo
     UIImageView *ImageView = [[UIImageView alloc] init];
-    ImageView.image = [UIImage imageNamed:@"登录页-logo.png"];
+    ImageView.image = [UIImage imageNamed:@"卡捷通登录页logo.png"];
     [self.view addSubview:ImageView];
     ImageView.sd_layout.centerXEqualToView(self.view).topSpaceToView(self.view,60.5).widthIs(97).heightIs(33);
     //账户名
@@ -161,7 +164,11 @@
     accountTextFiled = [[UITextField alloc] init];
     accountTextFiled.placeholder = @"登录名";
     accountTextFiled.font = [UIFont systemFontOfSize:15];
-    accountTextFiled.keyboardType = UIKeyboardTypeNumberPad;
+    //accountTextFiled.keyboardType = UIKeyboardTypeNumberPad;
+    accountTextFiled.delegate = self;
+    WLDecimalKeyboard *inputView = [[WLDecimalKeyboard alloc] init];
+    accountTextFiled.inputView = inputView;
+    [accountTextFiled reloadInputViews];
     [self.view addSubview:accountTextFiled];
     
     accountImg.sd_layout.leftSpaceToView(self.view,35).topSpaceToView(self.view,159).widthIs(20.5).heightIs(20);
@@ -177,6 +184,7 @@
     pwdTextFiled = [[UITextField alloc] init];
     pwdTextFiled.secureTextEntry = YES;
     pwdTextFiled.placeholder = @"密   码";
+    pwdTextFiled.delegate = self;
     pwdTextFiled.font = [UIFont systemFontOfSize:15];
     [self.view addSubview:pwdTextFiled];
     
@@ -237,7 +245,7 @@
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(magnify)];
     tap.numberOfTapsRequired = 1;
     DownLoadImg = [[UIImageView alloc] init];
-    DownLoadImg.image = [UIImage imageNamed:@"ktb"];
+    DownLoadImg.image = [UIImage imageNamed:@"卡捷通"];
     DownLoadImg.userInteractionEnabled = YES;
     [DownLoadImg addGestureRecognizer:tap];
     [self.view addSubview:DownLoadImg];
@@ -416,6 +424,7 @@
         [user setObject:key forKey:@"key"];
         [user setObject:YyToken forKey:@"YyToken"];
         [user setObject:YySign forKey:@"YySign"];
+        [user synchronize];
         NSLog(@"登陆key:%@...token:%@",dic[@"key"],dic[@"auth"]);
         if ([code isEqualToString:@"000000"]) {
             [self.navigationController pushViewController:tabbarController animated:YES];
@@ -487,6 +496,20 @@
     
     [[NSRunLoop currentRunLoop] limitDateForMode:NSDefaultRunLoopMode];
 }
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    [textField resignFirstResponder];
+    return YES;
+}
+
+
 - (void)stopWait
 {
     [[self.view viewWithTag:TAG_INDICATOR]removeFromSuperview];

@@ -630,6 +630,7 @@
                 NSString *content = dicc[@"content"];
                 NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
                 [user setObject:dicc [@"orderNo"] forKey:@"orderNo"];
+                [user synchronize];
                 NSLog(@"%@",dicc[@"orderNo"]);
                 NSLog(@"%@",dicc);
                 if (![code isEqualToString:@"000000"]) {

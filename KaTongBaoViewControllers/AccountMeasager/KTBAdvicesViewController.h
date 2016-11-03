@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface KTBAdvicesViewController : UIViewController
+@interface KTBAdvicesViewController : UIViewController<UITextViewDelegate>
 
 @end

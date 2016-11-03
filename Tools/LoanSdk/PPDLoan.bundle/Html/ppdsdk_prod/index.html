@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>拍拍贷</title>
+  <link rel="stylesheet" href="assets/css/amazeui.min.css">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <script type="text/javascript" src="assets/js/zepto.min.js"></script>
+  <script type="text/javascript" src="assets/js/app.js"></script>
+</head>
+<body class="index_app">
+    <header class="header">
+        <img src="assets/images/new_homePage_banner@2x.png">
+    </header>
+    <section class="main mt20">
+        <div class="for-ele am-g">
+            <input type="tel" class="phone am-u-sm-10" placeholder="请输入手机号" maxlength="11" id="phone">
+            <div class="am-u-sm-2 h32">
+              <i class="icon-msg"></i>
+            </div>
+        </div>
+        <div class="am-g for-ele">
+            <div class="am-u-sm-8 am-g-e am-dx">
+                <input type="tel" class="dxCode am-u-sm-8" id="dxCode" placeholder="手机验证码" maxlength="6">
+                <div class="am-u-sm-3 h32">
+                  <i class="icon-msg"></i><!-- icon-t -->
+                </div>
+            </div>
+            <div class="am-u-sm-4 am-dx">
+                <input type="button" value="获取验证码" class="getBtn" id="sendCode"  onclick="sendSmsCode()">
+            </div>
+        </div>        
+    </section>
+    <div class="btnWrap">
+      <input type="button" value="一键登录" class="am-btn am-btn-primary sbtn" id="submitBtn" onclick="submit()">
+    </div>
+    <div class="ser_ag">
+        使用即视为同意<a href="http://m.ppdai.com/act/sdk/service_protocol.html" class="ser_a">《用户服务协议》</a>和<a href="http://m.ppdai.com/act/sdk/loan_protocol.html" class="ser_a">《借入者协议》</a>
+    </div>
+<div class="loading" style="position:fixed;background:#000;opacity:.8;padding:5px;border-radius:4px;left:50%;top:50%;margin-top:-25px;margin-left:-25px; display:none">
+  <img src="http://m.ppdaicdn.com/home/images/loading.gif" width="50" height="50">
+</div>
+</body>
+</html>
+<script type="text/javascript">
+  PPD_SDK.init()
+  var isIOS = navigator.userAgent.match('iPad') 
+             || navigator.userAgent.match('iPhone') 
+             || navigator.userAgent.match('iPod');
+
+  var loadJS = function(name){
+      var oHead = document.getElementsByTagName('HEAD').item(0); 
+      var oScript= document.createElement("script"); 
+      oScript.type = "text/javascript"; 
+      oScript.src= name; 
+      oHead.appendChild(oScript);
+  }
+
+  if(isIOS){
+      loadJS('assets/js/reg_ios.js?v=1.0')
+  }else{
+      loadJS('assets/js/reg_android.js?v=1.0')
+  }
+
+var mobile = getQueryString("mobile");
+    if (mobile && mobile != '(null)') {
+    $("#phone").val(mobile);
+}
+
+var phoneInput = document.getElementById("phone");
+if ("createEvent" in document) {
+    var evt = document.createEvent("HTMLEvents");
+    evt.initEvent("input", false, true);
+    phoneInput.dispatchEvent(evt);
+}
+else {
+    phoneInput.fireEvent("input");
+}
+
+</script>

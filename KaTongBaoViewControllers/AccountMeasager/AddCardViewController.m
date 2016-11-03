@@ -23,6 +23,7 @@
 #import <CommonCrypto/CommonDigest.h>
 #import "SVProgressHUD.h"
 #import "KTBExampleViewController.h"
+#import "AFFNumericKeyboard.h"
 @interface AddCardViewController ()<MyAlertViewPopupDelegate>
 
 @end
@@ -122,7 +123,7 @@
     ImageView = [[UIImageView alloc] init];
     ImageView.image = [UIImage imageNamed:@"确认订单页面下拉"];
     
-    BankArray = [[NSArray alloc] initWithObjects:@"中国工商银行",@"中国农业银行",@"中国银行",@"中国建设银行",@"交通银行",@"中兴银行",@"中国光大银行",@"华夏银行",@"中国民生银行" ,@"广发发展银行",@"平安银行",@"招商银行",@"兴业银行",@"上海浦东发展银行",@"恒丰银行",@"浙商银行",@"渤海银行",@"徽商银行",@"上海农村商业银行",@"中国邮政储蓄银行",nil];
+    BankArray = [[NSArray alloc] initWithObjects:@"中国工商银行",@"中国农业银行",@"中国银行",@"中国建设银行",@"交通银行",@"中信银行",@"中国光大银行",@"华夏银行",@"中国民生银行" ,@"广发发展银行",@"平安银行",@"招商银行",@"兴业银行",@"上海浦东发展银行",@"恒丰银行",@"浙商银行",@"渤海银行",@"徽商银行",@"上海农村商业银行",@"中国邮政储蓄银行",nil];
     BankTypeArray = [[NSArray alloc] initWithObjects:@"102",@"103",@"104",@"105",@"301",@"302",@"303",@"304",@"305",@"306",@"307",@"308",@"309", @"310",@"315",@"316",@"318",@"319",@"322",@"403",nil];
     UIImageView *footView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, KscreenWidth, 300)];
     footView.backgroundColor = LightGrayColor;
@@ -398,6 +399,12 @@
             Bankcell.textFiled.placeholder = @"请输入银行卡信息";
             Bankcell.textFiled.keyboardType = UIKeyboardTypeNumberPad;
             Bankcell.textFiled.delegate = self;
+//            AFFNumericKeyboard *AFFKeyboard = [[AFFNumericKeyboard alloc] init];
+//            AFFKeyboard.Tag = 2;
+//            AFFKeyboard.delegate = self;
+//            Bankcell.textFiled.inputView = AFFKeyboard;
+            
+            //Bankcell.textFiled.inputView
             cell = Bankcell;
         }else if (indexPath.row == 1) {
             Mesagecell = [[MesageCell alloc] init];
@@ -479,6 +486,27 @@
         
     }
 }
+
+#define mark - AFFKeyBoardDeleage
+//-(void)numberKeyboardBackspace
+//{
+//    if (Bankcell.textFiled.text.length != 0)
+//    {
+//        Bankcell.textFiled.text = [Bankcell.textFiled.text substringToIndex:Bankcell.textFiled.text.length -1];
+//        //[self EnquirySubBank:SearchFld.text];
+//    }
+//}
+//
+//-(void)numberKeyboardInput:(NSInteger)number
+//{
+//    
+//    Bankcell.textFiled.text = [Bankcell.textFiled.text stringByAppendingString:[NSString stringWithFormat:@"%ld",(long)number]];
+//    
+//}
+//
+//- (void)ResignFirstResponse {
+//    [Bankcell.textFiled resignFirstResponder];
+//}
 
 - (void)alert:(NSString *)msg{
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:msg delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];

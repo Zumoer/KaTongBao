@@ -227,13 +227,13 @@
             TDMegCell *JXCell = [[TDMegCell alloc] init];
             JXCell.ImageView.hidden = YES;
             if(!([[BusiIntf curPayOrder].bankNumber isEqualToString:@""] || [BusiIntf curPayOrder].bankNumber  == nil)) {
-                JXCell.RightLabel.text = @"已认证";
+                JXCell.RightLabel.text = @"已绑定";
                 JXCell.RightLabel.textColor = [UIColor colorWithRed:58/255.0 green:142/255.0 blue:12/255.0 alpha:1];
             }else {
-                JXCell.RightLabel.text = @"未认证";
+                JXCell.RightLabel.text = @"未绑定";
                 JXCell.RightLabel.textColor = RedColor;
             }
-            JXCell.LeftLable.text = @"卡管理";
+            JXCell.LeftLable.text = @"结算卡绑定";
             JXCell.RightLabel.sd_layout.rightSpaceToView(JXCell.contentView,6).topSpaceToView(JXCell.contentView,12.5).widthIs(100).heightIs(20);
             JXCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             LineFour.frame = CGRectMake(0, 44.5, KscreenWidth, 1);

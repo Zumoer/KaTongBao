@@ -20,6 +20,7 @@
 #import "IBHttpTool.h"
 #import "SBJSON.h"
 #import "BusiIntf.h"
+#import "PPDLoanSdk.h"
 @interface JXSettingViewController ()
 
 @end
@@ -76,7 +77,7 @@
     HeaderView.backgroundColor = LightGrayColor;
     
     UIImageView *LogoImg = [[UIImageView alloc] init];
-    LogoImg.image = [UIImage imageNamed:@"登录页-logo.png"];
+    LogoImg.image = [UIImage imageNamed:@"卡捷通登录页logo.png"];
     [HeaderView addSubview:LogoImg];
     LogoImg.sd_layout.centerXEqualToView(HeaderView).centerYEqualToView(HeaderView).widthIs(KscreenWidth/2 - 20).heightIs(47.5 - 5);
     
@@ -128,11 +129,16 @@
 //退出登录实现方法
 -(void)clickClearButton{
     
+    
+    //退出小贷
+    [LoansSDK logoutAndCleanLoanSDK];
+    
     LoginViewController *controller = [[LoginViewController alloc] initWithNibName:nil bundle:nil];
     UINavigationController * navController = [[UINavigationController alloc] initWithRootViewController:controller] ;
     navController.navigationBarHidden = YES;
     navController.toolbarHidden = YES;
     [UIApplication sharedApplication].keyWindow.rootViewController = navController;
+    
     
 }
 
@@ -149,7 +155,17 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (indexPath.row == 0) {
-        return 16;
+        if ([BusiIntf curPayOrder].IsAPPStore) {
+            return 0;
+        }else {
+            return 16;
+        }
+    }else if (indexPath.row == 1) {
+        if ([BusiIntf curPayOrder].IsAPPStore) {
+            return 0;
+        }else {
+            return 45;
+        }
     }else if (indexPath.row == 5){
         return 25;
     }else if (indexPath.row == 2) {
@@ -164,6 +180,7 @@
     }
     
 }
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *identy = @"cell";
@@ -175,12 +192,16 @@
             ComCell.contentView.backgroundColor = LightGrayColor;
             cell = ComCell;
         }else if (indexPath.row == 1) {
-            cell.textLabel.text = @"检测更新";
-            cell.textLabel.font = [UIFont systemFontOfSize:16];
-            cell.textLabel.textColor = Gray100;
+            if ([BusiIntf curPayOrder].IsAPPStore) {  //APP Store布局
+                
+            }else {
+                cell.textLabel.text = @"检测更新";
+                cell.textLabel.font = [UIFont systemFontOfSize:16];
+                cell.textLabel.textColor = Gray100;
+            }
             
         }else if (indexPath.row == 2) {
-            if ([BusiIntf curPayOrder].IsAPPStore) {
+            if ([BusiIntf curPayOrder].IsAPPStore) {   //APP Store 布局
                 
                 
             }else {
@@ -195,6 +216,7 @@
             cell.textLabel.textColor = Gray100;
             [cell.contentView addSubview:LineTwo];
             [cell.contentView addSubview:LineThird];
+            
             LineTwo.sd_layout.leftSpaceToView(cell.contentView,0).rightSpaceToView(cell.contentView,0).bottomSpaceToView(cell.contentView,0.5).heightIs(0.5);
             LineThird.sd_layout.leftSpaceToView(cell.contentView,0).rightSpaceToView(cell.contentView,0).topSpaceToView(cell.contentView,0.5).heightIs(0.5);
 
